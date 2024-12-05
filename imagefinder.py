@@ -93,8 +93,8 @@ def main():
         st.info("Images already downloaded.")
 
     # Step 3: Extract features for downloaded images (only once)
+    st.subheader("Step 3: Extracting Features")
     if 'feature_list' not in st.session_state:
-        st.subheader("Step 3: Extracting Features")
         st.write("Extracting features from images...")
         feature_list, image_names = extract_features_from_folder(output_dir)
         st.session_state.feature_list = feature_list
@@ -125,11 +125,6 @@ def main():
         for image_path in top_similar_images:
             st.image(image_path, use_column_width=True)
     
-    # Allow the user to remove the previously uploaded image and re-upload another one
-    if st.button('Remove Current Image and Upload New'):
-        # Reset the uploaded image in the session state
-        st.session_state.uploaded_query_image = None
-        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
