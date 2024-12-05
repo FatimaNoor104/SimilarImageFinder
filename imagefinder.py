@@ -63,9 +63,9 @@ def find_top_similar_images(query_image, feature_list, image_names, folder_path,
 # Streamlit app
 def main():
     st.title("Image Similarity Finder")
-    
+    st.markdown('<p style="color: #3498db;">Developed by FATIMA NOOR</p>', unsafe_allow_html=True)
     # Step 1: Read the pre-uploaded CSV file
-    st.subheader("Reading Pre-uploaded CSV File")
+    st.subheader("Step 1: Reading Pre-uploaded CSV File")
     csv_path = "Data ID - Sheet1.csv"
     if not os.path.exists(csv_path):
         st.error("CSV file not found!")
