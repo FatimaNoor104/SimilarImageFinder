@@ -11,12 +11,8 @@ from PIL import Image
 import streamlit as st
 
 # Load pre-trained VGG16 model (without the top layer)
-@st.cache_resource  # Cache the model to avoid reloading
-def load_model():
-    vgg16_model = VGG16(weights='imagenet', include_top=False)
-    return Model(inputs=vgg16_model.input, outputs=vgg16_model.output)
-
-model = load_model()
+vgg16_model = VGG16(weights='imagenet', include_top=False)
+model = Model(inputs=vgg16_model.input, outputs=vgg16_model.output)
 
 # Function to prepare an image
 def prepare_image(image_path, target_size=(224, 224)):
@@ -32,22 +28,24 @@ def extract_features(image_path):
     return features.flatten()
 
 # Function to extract features from images in a folder
-def extract_features_from_folder(folder_path, max_images=None):
+def extract_features_from_folder(folder_path, max_images=10):
     feature_list = []
     image_names = []
+    image_count = 0
     
     for image_name in os.listdir(folder_path):
         image_path = os.path.join(folder_path, image_name)
-        if image_name.lower().endswith(('png', 'jpg', 'jpeg')):
+        if image_name.lower().endswith(('png', 'jpg', 'jpeg')) and image_count < max_images:
             features = extract_features(image_path)
             feature_list.append(features)
             image_names.append(image_name)
-        if max_images and len(image_names) >= max_images:
+            image_count += 1
+        if image_count >= max_images:
             break
     
     return feature_list, image_names
 
-# Function to find the top similar images
+# Function to find the top 5 similar images
 def find_top_similar_images(query_image, feature_list, image_names, folder_path, top_n=5):
     query_features = extract_features(query_image)
     similarities = []
@@ -68,21 +66,24 @@ def find_top_similar_images(query_image, feature_list, image_names, folder_path,
 
 # Streamlit app
 def main():
-    st.title("Interactive Image Similarity Finder")
+    st.title("Image Similarity Finder")
     
-    # Step 1: Download and extract features once
-    st.subheader("Step 1: Preparing Data")
-    output_dir = "downloaded_images"
-    csv_path = "Data ID - Sheet1.csv"  # Replace with your actual file path
-    
+    # Step 1: Read the pre-uploaded CSV file
+    st.subheader("Step 1: Reading Pre-uploaded CSV File")
+    csv_path = "Data ID - Sheet1.csv"
     if not os.path.exists(csv_path):
-        st.error("CSV file not found! Please ensure the CSV file is available.")
+        st.error("CSV file not found!")
         return
     
     df = pd.read_csv(csv_path)
+    st.write("CSV file loaded successfully!")
+    
+    # Step 2: Download images from the links and save in a folder
+    st.subheader("Step 2: Downloading Images from Links")
+    output_dir = "downloaded_images"
     os.makedirs(output_dir, exist_ok=True)
     
-    if len(os.listdir(output_dir)) == 0:
+    if len(os.listdir(output_dir)) == 0:  # Only download if the folder is empty
         st.write("Downloading images...")
         for _, row in df.iterrows():
             image_url = row['image_link']
@@ -91,56 +92,46 @@ def main():
                 output_path = os.path.join(output_dir, f"{row['Product ID']}.jpg")
                 with open(output_path, "wb") as file:
                     file.write(response.content)
-        st.success("Images downloaded successfully!")
+        st.success(f"Images downloaded to the folder: {output_dir}")
     else:
-        st.info("Images are already downloaded.")
-    
-    # Extract features once and cache them
-    if "feature_list" not in st.session_state:
-        st.write("Extracting features...")
-        feature_list, image_names = extract_features_from_folder(output_dir)
+        st.info("Images already downloaded.")
+
+    # Step 3: Extract features for downloaded images (only once)
+    if 'feature_list' not in st.session_state:
+        st.subheader("Step 3: Extracting Features")
+        st.write("Extracting features from images...")
+        feature_list, image_names = extract_features_from_folder(output_dir, max_images=10)
         st.session_state.feature_list = feature_list
         st.session_state.image_names = image_names
         st.success("Features extracted successfully!")
 
-    # Step 2: Interactive Image Upload and Similarity Search
-    st.subheader("Step 2: Upload Query Image")
+    # Step 4: Upload query image to find similar images
+    st.subheader("Step 4: Upload Query Image")
     uploaded_query_image = st.file_uploader("Upload an image to find similar images", type=["png", "jpg", "jpeg"])
 
-    # Keep track of uploaded images and their results
-    if "uploaded_images" not in st.session_state:
-        st.session_state.uploaded_images = []
-        st.session_state.results = []
-
-    if uploaded_query_image:
-        # Save and process uploaded image
-        query_image_path = os.path.join("temp", uploaded_query_image.name)
-        os.makedirs("temp", exist_ok=True)
+    if uploaded_query_image is not None:
+        # Save the uploaded file to a temporary location
+        query_image_path = os.path.join("temp_query_image.jpg")
         with open(query_image_path, "wb") as f:
             f.write(uploaded_query_image.getbuffer())
         
-        # Find top similar images
+        # Display the uploaded image
+        st.image(Image.open(query_image_path), caption="Uploaded Image", use_column_width=True)
+        
+        # Find top 5 similar images
         st.write("Finding similar images...")
-        top_similar_images = find_top_similar_images(
-            query_image=query_image_path,
-            feature_list=st.session_state.feature_list,
-            image_names=st.session_state.image_names,
-            folder_path=output_dir
-        )
-        st.session_state.uploaded_images.append(uploaded_query_image.name)
-        st.session_state.results.append(top_similar_images)
+        top_similar_images = find_top_similar_images(query_image_path, st.session_state.feature_list, st.session_state.image_names, output_dir)
+        
+        # Display the results
+        st.write("Top 5 Similar Images:")
+        for image_path in top_similar_images:
+            st.image(image_path, use_column_width=True)
     
-    # Display uploaded images and results
-    for idx, (image_name, result_images) in enumerate(zip(st.session_state.uploaded_images, st.session_state.results)):
-        with st.container():
-            st.image(os.path.join("temp", image_name), caption=f"Uploaded Image {idx + 1}", use_column_width=True)
-            st.write("Top Similar Images:")
-            for result_image in result_images:
-                st.image(result_image, use_column_width=True)
-            if st.button(f"Remove Image {idx + 1}"):
-                st.session_state.uploaded_images.pop(idx)
-                st.session_state.results.pop(idx)
-                break  # Rerun to refresh UI
+    # Allow the user to remove the previously uploaded image and re-upload another one
+    if st.button('Remove Current Image and Upload New'):
+        # Reset the uploaded image in the session state
+        st.session_state.uploaded_query_image = None
+        st.experimental_rerun()
 
 if __name__ == "__main__":
     main()
