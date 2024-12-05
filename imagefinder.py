@@ -123,7 +123,7 @@ def main():
         # Display the results
         st.write("Top 5 Similar Images:")
         for image_path in top_similar_images:
-            st.image(image_path, use_column_width=True)
+            st.image(image_path, use_column_width=False)
     
 
 if __name__ == "__main__":
