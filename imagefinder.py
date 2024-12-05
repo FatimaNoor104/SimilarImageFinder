@@ -122,8 +122,14 @@ def main():
         
         # Display the results
         st.write("Top 5 Similar Images:")
-        for image_path in top_similar_images:
-            st.image(image_path, use_column_width=False)
+        # Create two columns
+        col1, col2 = st.columns(2)
+
+        # Loop through and display images
+        for i, image_path in enumerate(top_similar_images):
+            col = col1 if i % 2 == 0 else col2
+            col.image(image_path, use_column_width=True, width=150)
+    
     
 
 if __name__ == "__main__":
