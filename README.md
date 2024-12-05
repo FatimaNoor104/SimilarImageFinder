@@ -69,9 +69,11 @@ The project uses the following technologies and libraries:
 ### Initial View
 When the app is run for the first time:
 - It reads the dataset, downloads images, and extracts their features.
-![Initial App View](https://github.com/user-attachments/assets/a692a225-51c0-4d06-b732-c9733d178d61)
+![Initial App View](https://github.com/user-attachments/assets/e1dc3ded-ed99-4eb6-bd41-88a73085386a)
+
 - Once the features are successfully extracted, user can upload an image to find the top 5 similar images from the dataset.
 ![App View](https://github.com/user-attachments/assets/3fd81f22-edc1-4d44-9897-c253256b38ec)
+
 
 ### Query Image Upload
 After uploading the first query image, the app displays similar images from the dataset.
