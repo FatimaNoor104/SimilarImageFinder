@@ -77,8 +77,10 @@ When the app is run for the first time:
 
 ### Query Image Upload
 After uploading the first query image, the app displays similar images from the dataset.
-
-
+![Query image 1](https://github.com/user-attachments/assets/9838c274-42bf-41ba-9280-77435e7ae523)
+![Similar images 1 2 ](https://github.com/user-attachments/assets/e0eac3d7-7dc5-460c-944e-59c543235de8)
+![Similar images 3 4](https://github.com/user-attachments/assets/59ba720e-941b-4a53-9154-bcae4e5f7a10)
+![Similar image 5](https://github.com/user-attachments/assets/b8b111af-4ca7-4538-8091-f4a35af088ec)
 
 ### Second Query Image Upload
 For subsequent uploads, the app skips redundant steps and displays similar images for the newly uploaded query.
