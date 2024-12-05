@@ -28,7 +28,7 @@ def extract_features(image_path):
     return features.flatten()
 
 # Function to extract features from images in a folder
-def extract_features_from_folder(folder_path, max_images=10):
+def extract_features_from_folder(folder_path, max_images=none):
     feature_list = []
     image_names = []
     image_count = 0
@@ -100,7 +100,7 @@ def main():
     if 'feature_list' not in st.session_state:
         st.subheader("Step 3: Extracting Features")
         st.write("Extracting features from images...")
-        feature_list, image_names = extract_features_from_folder(output_dir, max_images=10)
+        feature_list, image_names = extract_features_from_folder(output_dir)
         st.session_state.feature_list = feature_list
         st.session_state.image_names = image_names
         st.success("Features extracted successfully!")
