@@ -65,7 +65,7 @@ def main():
     st.title("Image Similarity Finder")
     
     # Step 1: Read the pre-uploaded CSV file
-    st.subheader("Step 1: Reading Pre-uploaded CSV File")
+    st.subheader("Reading Pre-uploaded CSV File")
     csv_path = "Data ID - Sheet1.csv"
     if not os.path.exists(csv_path):
         st.error("CSV file not found!")
@@ -100,6 +100,8 @@ def main():
         st.session_state.feature_list = feature_list
         st.session_state.image_names = image_names
         st.success("Features extracted successfully!")
+    else:
+        st.write("Features are already extracted.")
 
     # Step 4: Upload query image to find similar images
     st.subheader("Step 4: Upload Query Image")
