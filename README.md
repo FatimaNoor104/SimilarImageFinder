@@ -69,7 +69,7 @@ The project uses the following technologies and libraries:
 ### Initial View
 When the app is run for the first time:
 - It reads the dataset, downloads images, and extracts their features.
-![Initial App View](https://github.com/user-attachments/assets/e1dc3ded-ed99-4eb6-bd41-88a73085386a)
+![Initial App View](https://github.com/user-attachments/assets/d097aaa7-fcf2-4883-acdf-c64a4694bce8)
 
 - Once the features are successfully extracted, user can upload an image to find the top 5 similar images from the dataset.
   
