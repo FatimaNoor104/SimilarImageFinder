@@ -27,21 +27,17 @@ def extract_features(image_path):
     features = model.predict(preprocessed_image)
     return features.flatten()
 
-# Function to extract features from images in a folder
-def extract_features_from_folder(folder_path, max_images=none):
+# Function to extract features from all images in a folder
+def extract_features_from_folder(folder_path):
     feature_list = []
     image_names = []
-    image_count = 0
     
     for image_name in os.listdir(folder_path):
         image_path = os.path.join(folder_path, image_name)
-        if image_name.lower().endswith(('png', 'jpg', 'jpeg')) and image_count < max_images:
+        if image_name.lower().endswith(('png', 'jpg', 'jpeg')):
             features = extract_features(image_path)
             feature_list.append(features)
             image_names.append(image_name)
-            image_count += 1
-        if image_count >= max_images:
-            break
     
     return feature_list, image_names
 
