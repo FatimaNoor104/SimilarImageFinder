@@ -73,8 +73,7 @@ When the app is run for the first time:
 
 - Once the features are successfully extracted, user can upload an image to find the top 5 similar images from the dataset.
   
-![App View](https://github.com/user-attachments/assets/3fd81f22-edc1-4d44-9897-c253256b38ec)
-
+![App View](https://github.com/user-attachments/assets/0b6494d7-3bbf-42a7-8485-d0ed60168eca)
 
 ### Query Image Upload
 After uploading the query image, the app displays similar images from the dataset.
