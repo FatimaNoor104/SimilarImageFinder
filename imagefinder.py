@@ -114,7 +114,7 @@ def main():
             f.write(uploaded_query_image.getbuffer())
         
         # Display the uploaded image
-        st.image(Image.open(query_image_path), caption="Uploaded Image", width=300)
+        st.image(Image.open(query_image_path), caption="Uploaded Image", use_container_width=True)
         
         # Find top 5 similar images
         st.write("Finding similar images...")
