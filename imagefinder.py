@@ -94,8 +94,8 @@ def main():
 
     # Step 3: Extract features for downloaded images (only once)
     st.subheader("Step 3: Extracting Features")
-    if 'feature_list' not in st.session_state:
-        st.write("Extracting features from images...")
+    if 'feature_list' not in st.session_state or not st.session_state.feature_list:
+        st.write("Extracting features...")
         feature_list, image_names = extract_features_from_folder(output_dir)
         st.session_state.feature_list = feature_list
         st.session_state.image_names = image_names
